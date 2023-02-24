@@ -1,0 +1,48 @@
+package com.TP.FPT913_SEND.LSR_FORM;
+import java.util.*;
+import com.synchronoss.ruleserver.core.xpath.XOMContainerBean;
+import com.synchronoss.ruleserver.core.xpath.XOMAccessBean;
+import com.wisor.brms.asog.xpath.XPathProcessor;
+import com.wisor.brms.fpt.Populated;
+import com.wisor.brms.fpt.Equals;
+import com.wisor.brms.fpt.Contains;
+import com.wisor.brms.fpt.LengthCheck;
+import com.wisor.brms.fpt.Position;
+import com.wisor.brms.fpt.DatatypeCheck;
+import com.wisor.brms.fpt.SpaceCheck;
+import com.wisor.brms.fpt.TNFormat;
+import com.wisor.brms.fpt.RangeOfValues;
+import com.wisor.brms.fpt.DateCheck;
+import com.wisor.brms.fpt.Prohibited;
+import com.wisor.brms.fpt.DateFormatCheck;
+import com.wisor.brms.fpt.Required;
+import com.wisor.brms.fpt.CapitalLetterCheck;
+import com.wisor.brms.fpt.TimeFormatCheck;
+import com.wisor.brms.fpt.SpecialFormat;
+import com.wisor.brms.asog.dao.HOLIDAY;
+import com.wisor.brms.ErrorCodeMsg;
+import com.wisor.brms.ErrorResponse;
+import com.wisor.brms.fpt.dao.SupplementOrderCheck;
+rule "FRPLSR267" dialect "mvel" ruleflow-group "LSR_FORM"
+enabled true
+
+when
+xcb object
+Evaluate 
+Start Brace
+the "//lsrform/adminsection/actl" is_not_populated 
+AND
+ the "//lsrform/adminsection/reqtyp" equals "AB" 
+AND
+ the "//lsrform/adminsection/act" equals "C" 
+AND
+ RuleId "FRPLSR267" any_occurance_of_the "lna" in_section "/loopserviceform/servicedetailsection[i]" is_equal_to_value "N" 
+AND
+ the 2 position_of "//lsrform/adminsection/tos" equal_to_values "1,2,3,4,F,P,R,W,X" 
+AND
+ the "//lsrform/adminsection/sli" not_equals "H" 
+End Brace
+
+then
+the error code "FRPLSR267" the error message "ACCESS CUSTOMER TERMINAL LOCATION IS REQUIRED" for the field "//Localservicerequest/Lsrform/Adminsection/Actl"
+end

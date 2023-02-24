@@ -1,0 +1,62 @@
+package com.TP.FPT913_SEND.LSR_FORM;
+import java.util.*;
+import com.synchronoss.ruleserver.core.xpath.XOMContainerBean;
+import com.synchronoss.ruleserver.core.xpath.XOMAccessBean;
+import com.wisor.brms.asog.xpath.XPathProcessor;
+import com.wisor.brms.fpt.Populated;
+import com.wisor.brms.fpt.Equals;
+import com.wisor.brms.fpt.Contains;
+import com.wisor.brms.fpt.LengthCheck;
+import com.wisor.brms.fpt.Position;
+import com.wisor.brms.fpt.DatatypeCheck;
+import com.wisor.brms.fpt.SpaceCheck;
+import com.wisor.brms.fpt.TNFormat;
+import com.wisor.brms.fpt.RangeOfValues;
+import com.wisor.brms.fpt.DateCheck;
+import com.wisor.brms.fpt.Prohibited;
+import com.wisor.brms.fpt.DateFormatCheck;
+import com.wisor.brms.fpt.Required;
+import com.wisor.brms.fpt.CapitalLetterCheck;
+import com.wisor.brms.fpt.TimeFormatCheck;
+import com.wisor.brms.fpt.SpecialFormat;
+import com.wisor.brms.asog.dao.HOLIDAY;
+import com.wisor.brms.ErrorCodeMsg;
+import com.wisor.brms.ErrorResponse;
+import com.wisor.brms.fpt.dao.SupplementOrderCheck;
+rule "FRPLSR406" dialect "mvel" ruleflow-group "LSR_FORM"
+enabled true
+
+when
+xcb object
+Evaluate 
+Start Brace
+the "//lsrform/adminsection/actl" is_not_populated 
+AND
+ the 1 position_of "//lsrform/adminsection/reqtyp" equal to "M" 
+AND
+  
+Start Brace
+ the "//lsrform/adminsection/act" is_equal_to_values "N,V" 
+OR
+  
+Start Brace
+ the "//lsrform/adminsection/act" equals "C" 
+AND
+  
+Start Brace
+ RuleId "FRPLSR406" any_occurance_of_the "lna" in_section "/portserviceform/servicedetailsection[i]"  is_equal_to_value "N" 
+OR
+ RuleId "FRPLSR406" any_occurance_of_the "lna" in_section "/loopserviceform/servicedetailsection[i]"  is_equal_to_value "N"  
+End Brace
+ 
+AND
+ the 2 position_of "//lsrform/adminsection/tos" equal_to_values "1,2,3,4,W,X"  
+End Brace
+ 
+End Brace
+ 
+End Brace
+
+then
+the error code "FRPLSR406" the error message "ACTL IS REQUIRED FOR REQTYP/ACT" for the field "//Localservicerequest/Lsrform/Adminsection/Actl"
+end
